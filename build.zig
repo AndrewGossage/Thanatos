@@ -27,6 +27,23 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
+    // Link system libraries for GTK and WebKit2GTK
+    exe.linkSystemLibrary("gtk+-3.0");
+    exe.linkSystemLibrary("webkit2gtk-4.0");
+    exe.linkLibC(); // Required for C library integration
+
+    // Add include paths for headers
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/gtk-3.0" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/glib-2.0" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/lib/glib-2.0/include" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/pango-1.0" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/cairo" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/gdk-pixbuf-2.0" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/atk-1.0" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/webkit2gtk-4.0" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/libsoup-2.4" });
+    exe.addIncludePath(.{ .cwd_relative = "/usr/include/javascriptcoregtk-4.0" });
+
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
     // step when running `zig build`).
@@ -65,6 +82,11 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
+    // Add the same library links and include paths to tests
+    lib_unit_tests.linkSystemLibrary("gtk+-3.0");
+    lib_unit_tests.linkSystemLibrary("webkit2gtk-4.0");
+    lib_unit_tests.linkLibC();
+
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 
     const exe_unit_tests = b.addTest(.{
@@ -74,6 +96,11 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         }),
     });
+
+    // Add the same library links and include paths to executable tests
+    exe_unit_tests.linkSystemLibrary("gtk+-3.0");
+    exe_unit_tests.linkSystemLibrary("webkit2gtk-4.0");
+    exe_unit_tests.linkLibC();
 
     const run_exe_unit_tests = b.addRunArtifact(exe_unit_tests);
 
