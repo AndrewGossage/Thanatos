@@ -5,6 +5,7 @@
     <title>Zoi - Write Your Own Server</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
   </head>
   <body
     class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen"
@@ -112,20 +113,33 @@
         >
           <h2 class="text-3xl font-bold mb-4 text-purple-300">Try It Live</h2>
           <p class="text-lg text-purple-100 mb-6">
-            Click the button below to make a live request to the Zoi server
-            using HTMX:
+            Enter a command below to execute it on the Zoi server using HTMX:
           </p>
+
+          <input
+            type="text"
+            id="commandInput"
+            name="request"
+            value="fortune"
+            placeholder="Enter command (e.g., fortune, date, ls -la)"
+            class="w-full p-4 mb-4 bg-black bg-opacity-30 rounded-lg text-purple-200 font-mono border border-purple-500 border-opacity-30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+          />
+
           <button
-            hx-get="/api/get"
-            hx-target="#result"
+            hx-post="/api/exec"
+            hx-include="#commandInput"
+            hx-headers='{"Content-Type": "application/json"}'
+            hx-ext="json-enc"
+            hx-target="#result2"
             hx-swap="innerHTML"
             class="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover:from-purple-400 hover:via-pink-400 hover:to-purple-400"
           >
-            <span class="text-lg">Send Request to Zoi Server</span>
+            Execute Command
           </button>
+
           <div
-            id="result"
-            class="mt-6 p-4 bg-black bg-opacity-30 rounded-lg min-h-12 text-purple-200 font-mono"
+            id="result2"
+            class="mt-6 p-4 bg-black bg-opacity-30 rounded-lg min-h-12 text-purple-200 font-mono whitespace-pre-wrap"
           ></div>
         </section>
 

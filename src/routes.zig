@@ -7,12 +7,11 @@ const stdout = std.io.getStdOut().writer();
 pub const routes = &[_]server.Route{
     .{ .path = "/", .callback = index },
     .{ .path = "/home", .callback = index },
-    .{ .path = "/", .method = .POST, .callback = postEndpoint },
     .{ .path = "/styles/*", .callback = server.static },
     .{ .path = "/scripts/*", .callback = server.static },
     .{ .path = "/pages/*", .callback = server.static },
-    .{ .path = "/api/:endpoint", .method = .POST, .callback = postEndpoint },
     .{ .path = "/api/get", .method = .GET, .callback = hxGet },
+    .{ .path = "/api/exec", .method = .POST, .callback = hxExec },
 };
 
 const IndexQuery = struct {
@@ -41,8 +40,42 @@ fn hxGet(request: *std.http.Server.Request, allocator: std.mem.Allocator) !void 
         value = try fmt.urlDecode(query.?.value orelse "default", allocator);
     }
     const heap = std.heap.page_allocator;
-    const body = try fmt.renderTemplate("index.html", .{ .value = value }, heap);
+    const body = try fmt.renderTemplate("pages/resp.html", .{ .value = value }, heap);
 
+    defer heap.free(body);
+    try request.respond(body, .{ .status = .ok, .keep_alive = false });
+}
+
+fn hxExec(request: *std.http.Server.Request, allocator: std.mem.Allocator) !void {
+    var value: []const u8 = "This is a template string";
+    const reqBody = try server.Parser.json(PostInput, allocator, request);
+
+    // Get command from query parameter
+
+    // Execute shell command
+    const result = std.process.Child.run(.{
+        .allocator = allocator,
+        .argv = &[_][]const u8{ "/bin/bash", "-c", reqBody.request },
+        .max_output_bytes = 1024 * 1024, // 1MB max output
+    }) catch |err| {
+        const error_msg = try std.fmt.allocPrint(allocator, "Error executing command: {}", .{err});
+        defer allocator.free(error_msg);
+        value = error_msg;
+
+        const heap = std.heap.page_allocator;
+        const body = try fmt.renderTemplate("pages/resp.html", .{ .value = value }, heap);
+        defer heap.free(body);
+        try request.respond(body, .{ .status = .internal_server_error, .keep_alive = false });
+        return;
+    };
+    defer allocator.free(result.stdout);
+    defer allocator.free(result.stderr);
+
+    // Use stdout if available, otherwise stderr
+    value = if (result.stdout.len > 0) result.stdout else result.stderr;
+
+    const heap = std.heap.page_allocator;
+    const body = try fmt.renderTemplate("pages/resp.html", .{ .value = value }, heap);
     defer heap.free(body);
     try request.respond(body, .{ .status = .ok, .keep_alive = false });
 }
