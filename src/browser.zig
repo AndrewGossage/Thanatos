@@ -50,4 +50,3 @@ pub fn runBrowser() !void {
     // Start the GTK main loop
     c.gtk_main();
 }
-

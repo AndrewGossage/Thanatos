@@ -1,36 +1,159 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    
-    <title>Hello!</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/styles/style.css">
+    <meta charset="utf-8" />
+    <title>Zoi - Write Your Own Server</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   </head>
-  <body>
-      <header>
-        <nav id="navbar" class="navbar sticky-top bg-body-tertiarynavbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-</a>
-            
+  <body
+    class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen"
+  >
+    <header>
+      <nav
+        class="sticky top-0 bg-black bg-opacity-50 backdrop-blur-md shadow-lg z-50"
+      >
+        <div
+          class="container mx-auto px-6 py-4 flex items-center justify-between"
+        >
+          <a
+            class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-300 hover:to-pink-300 transition"
+            href="/"
+          >
+            Zoi
+          </a>
+          <a
+            href="https://github.com/AndrewGossage/Zoi"
+            target="_blank"
+            class="text-purple-300 hover:text-purple-100 transition font-medium"
+          >
+            GitHub →
+          </a>
+        </div>
+      </nav>
+    </header>
 
-    <a href="https://github.com/AndrewGossage/Zoi" target="none">GitHub</a>
+    <main class="container mx-auto px-6 py-12 max-w-4xl">
+      <div class="text-center mb-16">
+        <div
+          class="text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 animate-pulse"
+        >
+          Zoi
+        </div>
+        <h1 class="text-5xl font-bold mb-6 text-purple-100">
+          Write Your Own Server
+        </h1>
+        <p class="text-xl text-purple-200 leading-relaxed">
+          Building web servers doesn't have to be complex. Zoi is an
+          ultra-simple Zig server that teaches you the fundamentals by being
+          transparent and understandable.
+        </p>
+      </div>
 
-            </div>
-        </nav>
-      </header>
-		<main>
-    <div class = "z">Zoi</div>
-    <h1>Ultra-Simple Zig Server</h1>
-    <p>Zoi strives to be a server so easy you can understand every piece of it just by reading the code.  
-    </p>
+      <div class="space-y-12">
+        <section
+          class="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-purple-500 border-opacity-20"
+        >
+          <h2 class="text-3xl font-bold mb-4 text-purple-300">
+            Why Write Your Own Server?
+          </h2>
+          <ul class="space-y-3 text-lg text-purple-100">
+            <li class="flex items-start">
+              <span class="text-pink-400 mr-3">✦</span>
+              <span
+                ><strong>Deep Understanding:</strong> Learn exactly how HTTP
+                works under the hood</span
+              >
+            </li>
+            <li class="flex items-start">
+              <span class="text-pink-400 mr-3">✦</span>
+              <span
+                ><strong>No Magic:</strong> Every line of code is readable and
+                purposeful</span
+              >
+            </li>
+            <li class="flex items-start">
+              <span class="text-pink-400 mr-3">✦</span>
+              <span
+                ><strong>Performance:</strong> Zig offers C-like speed with
+                modern safety</span
+              >
+            </li>
+            <li class="flex items-start">
+              <span class="text-pink-400 mr-3">✦</span>
+              <span
+                ><strong>Educational:</strong> Perfect for learning systems
+                programming</span
+              >
+            </li>
+          </ul>
+        </section>
 
-	  <p class="template-string">$value$</p>
-	    <button id="postButton" ><span class="gradient-text">This button sends a post request to the server</span></button>
-    <p id="result"></p>
-	</main>
+        <section
+          class="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-purple-500 border-opacity-20"
+        >
+          <h2 class="text-3xl font-bold mb-4 text-purple-300">
+            The Zoi Philosophy
+          </h2>
+          <p class="text-lg text-purple-100 leading-relaxed mb-4">
+            Zoi strives to be a server so simple you can understand every piece
+            just by reading the code. No hidden abstractions, no framework
+            magic—just clean, straightforward server implementation.
+          </p>
+          <p class="text-lg text-purple-100 leading-relaxed">
+            By keeping the codebase minimal and focused, Zoi serves as both a
+            functional server and an educational tool for anyone wanting to
+            understand web server fundamentals.
+          </p>
+        </section>
+
+        <section
+          class="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-purple-500 border-opacity-20"
+        >
+          <h2 class="text-3xl font-bold mb-4 text-purple-300">Try It Live</h2>
+          <p class="text-lg text-purple-100 mb-6">
+            Click the button below to make a live request to the Zoi server
+            using HTMX:
+          </p>
+          <button
+            hx-get="/api/get"
+            hx-target="#result"
+            hx-swap="innerHTML"
+            class="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover:from-purple-400 hover:via-pink-400 hover:to-purple-400"
+          >
+            <span class="text-lg">Send Request to Zoi Server</span>
+          </button>
+          <div
+            id="result"
+            class="mt-6 p-4 bg-black bg-opacity-30 rounded-lg min-h-12 text-purple-200 font-mono"
+          ></div>
+        </section>
+
+        <section
+          class="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-purple-500 border-opacity-20"
+        >
+          <h2 class="text-3xl font-bold mb-4 text-purple-300">Get Started</h2>
+          <p class="text-lg text-purple-100 leading-relaxed mb-6">
+            Ready to dive into the code? Check out the GitHub repository to
+            explore Zoi's implementation and start building your understanding
+            of web servers from the ground up.
+          </p>
+          <a
+            href="https://github.com/AndrewGossage/Zoi"
+            target="_blank"
+            class="inline-block bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:scale-105"
+          >
+            View on GitHub →
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="container mx-auto px-6 py-12 text-center text-purple-300">
+      <p class="text-sm">
+        Built with simplicity in mind. No frameworks, no complexity—just pure
+        server fundamentals.
+      </p>
+    </footer>
   </body>
-    <script src="/scripts/index.js"></script>
 </html>
