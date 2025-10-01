@@ -91,30 +91,7 @@ pub fn static(request: *std.http.Server.Request, allocator: std.mem.Allocator) !
     const body: []u8 = try allocator.alloc(u8, file_size);
     _ = try file.readAll(body);
     defer allocator.free(body);
-
-    // Determine MIME type based on file extension
-    const mime_type = getMimeType(request.head.target);
-
-    request.respond(body, .{ .status = .ok, .keep_alive = false, .extra_headers = &.{.{ .name = "content-type", .value = mime_type }} }) catch return ServerError.Server;
-}
-
-pub fn getMimeType(path: []const u8) []const u8 {
-    if (std.mem.endsWith(u8, path, ".js")) {
-        return "application/javascript";
-    } else if (std.mem.endsWith(u8, path, ".css")) {
-        return "text/css";
-    } else if (std.mem.endsWith(u8, path, ".html")) {
-        return "text/html";
-    } else if (std.mem.endsWith(u8, path, ".json")) {
-        return "application/json";
-    } else if (std.mem.endsWith(u8, path, ".png")) {
-        return "image/png";
-    } else if (std.mem.endsWith(u8, path, ".jpg") or std.mem.endsWith(u8, path, ".jpeg")) {
-        return "image/jpeg";
-    } else if (std.mem.endsWith(u8, path, ".svg")) {
-        return "image/svg+xml";
-    }
-    return "application/octet-stream";
+    request.respond(body, .{ .status = .ok, .keep_alive = false }) catch return ServerError.Server;
 }
 
 ///this route returns a 404 error and is called when no other route matched
@@ -139,25 +116,18 @@ pub const Router = struct {
 
     /// dispatch a request to the first route with a matching path and method
     pub fn route(self: Router, request: *std.http.Server.Request, allocator: std.mem.Allocator) anyerror!void {
-        std.debug.print("\n recieved: -'{s}'-\n", .{request.head.target});
-
         for (self.routes.items) |*r| {
             const query = std.mem.indexOf(u8, request.head.target, "?") orelse request.head.target.len;
             if (r.match(request.head.target[0..query], request.head.method)) {
-                std.debug.print("match: -'{s}'-\n", .{r.path});
+                std.debug.print("match: {s}\n", .{r.path});
                 r.callback(request, allocator) catch |err| {
-                    std.debug.print("error handling route: {}\n", .{err});
-                    // Send error response to client
-                    request.respond("Internal Server Error", .{
-                        .status = .internal_server_error,
-                    }) catch {};
-                    return err;
+                    std.debug.print("error: {}\n", .{err});
+                    return;
                 };
-                return; // ← Add this! Stop processing after successful match
             }
         }
-        std.debug.print("\n!!!!!!! no match: -'{s}'-\n", .{request.head.target});
-        try notFound.callback(request, allocator);
+        notFound.callback(request, allocator) catch return ServerError.Server;
+        return;
     }
 };
 

@@ -1,7 +1,0 @@
-{
-  "watch": ["src", "build.zig"],
-  "ext": "zig",
-  "ignore": ["zig-out/*", "zig-cache/*"],
-  "exec": "killall zig; zig build run",
-  "delay": 500
-}
