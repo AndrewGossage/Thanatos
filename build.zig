@@ -32,19 +32,37 @@ pub fn build(b: *std.Build) void {
     exe.linkSystemLibrary("webkit2gtk-4.0");
     exe.linkLibC(); // Required for C library integration
 
-    // Add include paths for headers
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/gtk-3.0" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/glib-2.0" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/lib/glib-2.0/include" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/pango-1.0" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/cairo" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/gdk-pixbuf-2.0" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/atk-1.0" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/webkit2gtk-4.0" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/libsoup-2.4" });
-    exe.addIncludePath(.{ .cwd_relative = "/usr/include/javascriptcoregtk-4.0" });
-
-    // This declares intent for the executable to be installed into the
+    const target_os = target.result.os.tag;
+    switch (target_os) {
+        .linux => {
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/gtk-3.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/glib-2.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/lib/glib-2.0/include" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/pango-1.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/cairo" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/gdk-pixbuf-2.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/atk-1.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/webkit2gtk-4.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/libsoup-2.4" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/include/javascriptcoregtk-4.0" });
+        },
+        .freebsd => {
+            // FreeBSD typically uses /usr/local/include
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/gtk-3.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/glib-2.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/lib/glib-2.0/include" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/pango-1.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/cairo" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/gdk-pixbuf-2.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/atk-1.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/webkit2gtk-4.0" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/libsoup-2.4" });
+            exe.addIncludePath(.{ .cwd_relative = "/usr/local/include/javascriptcoregtk-4.0" });
+        },
+        else => {
+            std.log.err("Unsupported OS for GTK build", .{});
+        },
+    } // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
     // step when running `zig build`).
     b.installArtifact(exe);
@@ -111,4 +129,3 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_lib_unit_tests.step);
     test_step.dependOn(&run_exe_unit_tests.step);
 }
-
