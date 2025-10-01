@@ -1,0 +1,22 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:watch": "nodemon --exec 'astro build' --ext js,ts,astro,jsx,tsx,vue,svelte --ignore dist --ignore node_modules",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.6",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.6.0",
+    "@tailwindcss/vite": "^4.1.13",
+    "astro": "^5.14.1",
+    "sharp": "^0.34.3",
+    "tailwind": "^4.0.0",
+    "tailwindcss": "^4.1.13"
+  }
+}

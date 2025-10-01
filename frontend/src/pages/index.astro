@@ -1,0 +1,35 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import '../styles/global.css';
+
+---
+<!doctype html>
+<html lang="en">
+	<head>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js" integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ" crossorigin="anonymous"></script>
+
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>🧑‍🚀 Hello, Astronaut!</h1>
+			<p>
+				$value$
+			</p>
+			<!-- Vanilla JS fetch example -->
+			<div style="margin: 2rem 0; padding: 1rem; border: 1px solid #ccc; border-radius: 8px;">
+				<h2>Send JSON with Vanilla JS</h2>
+				<button id="fetchButton">Get Some HTML</button>
+          <button class="bg-blue-600 p-4 text-white rounded-xl" hx-get="/api" hx-target="#response">Get Some HTML with HTMX</button>
+
+				<div id="response"></div>
+			</div>
+			
+		</main>
+		<Footer />
+	</body>
+</html>
