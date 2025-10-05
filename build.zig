@@ -28,6 +28,7 @@ pub fn build(b: *std.Build) void {
     });
 
     // Link system libraries for GTK and WebKit2GTK
+    exe.linkSystemLibrary("sqlite3");
     exe.linkSystemLibrary("gtk+-3.0");
     exe.linkSystemLibrary("webkit2gtk-4.0");
     exe.linkLibC(); // Required for C library integration

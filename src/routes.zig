@@ -4,6 +4,7 @@ const server = @import("server.zig");
 const fmt = @import("fmt.zig");
 const stdout = std.io.getStdOut().writer();
 const builtin = @import("builtin");
+const sql = @import("sql.zig");
 
 pub const routes = &[_]server.Route{
     .{ .path = "/", .callback = index },
@@ -12,8 +13,23 @@ pub const routes = &[_]server.Route{
     .{ .path = "/scripts/*", .callback = server.static },
     .{ .path = "/pages/*", .callback = server.static },
     .{ .path = "/api/get", .method = .GET, .callback = hxGet },
+    .{ .path = "/api/sql", .method = .GET, .callback = sqlRoute },
     .{ .path = "/api/exec", .method = .POST, .callback = hxExec },
 };
+
+fn sqlRoute(request: *std.http.Server.Request, allocator: std.mem.Allocator) !void {
+    var value: []const u8 = try sql.run(allocator);
+    const query = server.Parser.query(IndexQuery, allocator, request);
+
+    if (query != null) {
+        value = try fmt.urlDecode(query.?.value orelse "default", allocator);
+    }
+    const heap = std.heap.page_allocator;
+    const body = try fmt.renderTemplate("pages/resp.html", .{ .value = value }, heap);
+
+    defer heap.free(body);
+    try request.respond(body, .{ .status = .ok, .keep_alive = false });
+}
 
 const IndexQuery = struct {
     value: ?[]const u8,

@@ -5,7 +5,7 @@ const r = @import("routes.zig");
 const browser = @import("browser.zig");
 const Foo = struct { bar: u1, foo: []const u8 };
 const stdout = std.io.getStdOut().writer();
-
+const sql = @import("sql.zig");
 const ServerContext = struct {
     server: *server.Server,
     routes: std.ArrayList(server.Route),
@@ -21,7 +21,7 @@ pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
     defer _ = gpa.deinit();
-
+    try sql.init();
     var settings = try Config.init("config.json", allocator);
     defer settings.deinit(allocator);
     var routes = std.ArrayList(server.Route){};
