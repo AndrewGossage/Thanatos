@@ -13,30 +13,30 @@ Document Path:          /api/sql
 Document Length:        45104 bytes
 
 Concurrency Level:      1000
-Time taken for tests:   0.986 seconds
-Complete requests:      1000
+Time taken for tests:   4.886 seconds
+Complete requests:      5000
 Failed requests:        0
-Total transferred:      45165000 bytes
-HTML transferred:       45104000 bytes
-Requests per second:    1013.92 [#/sec] (mean)
-Time per request:       986.273 [ms] (mean)
-Time per request:       0.986 [ms] (mean, across all concurrent requests)
-Transfer rate:          44720.32 [Kbytes/sec] received
+Total transferred:      225825000 bytes
+HTML transferred:       225520000 bytes
+Requests per second:    1023.31 [#/sec] (mean)
+Time per request:       977.220 [ms] (mean)
+Time per request:       0.977 [ms] (mean, across all concurrent requests)
+Transfer rate:          45134.62 [Kbytes/sec] received
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0   14   2.1     14      18
-Processing:    30  828 142.5    871     963
-Waiting:        3  724 172.6    753     963
-Total:         30  842 142.4    885     980
+Connect:        0    3   5.9      0      19
+Processing:    33  925 303.0    904    2311
+Waiting:        3  771 273.3    747    2097
+Total:         33  928 303.1    909    2311
 
 Percentage of the requests served within a certain time (ms)
-  50%    885
-  66%    921
-  75%    932
-  80%    941
-  90%    958
-  95%    966
-  98%    972
-  99%    973
- 100%    980 (longest request)
+  50%    909
+  66%   1029
+  75%   1106
+  80%   1160
+  90%   1315
+  95%   1464
+  98%   1642
+  99%   1759
+ 100%   2311 (longest request)
