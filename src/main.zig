@@ -21,7 +21,7 @@ pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
     defer _ = gpa.deinit();
-    try sql.init();
+    try sql.init(allocator);
     var settings = try Config.init("config.json", allocator);
     defer settings.deinit(allocator);
     var routes = std.ArrayList(server.Route){};
