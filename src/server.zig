@@ -201,12 +201,11 @@ pub const Server = struct {
                 }
             }
             if (self.shouldClose == true and idle_count >= worker_count) {
-                self.server.deinit();
 
                 for (0..worker_count) |i| {
                     std.debug.print("Killing worker: {}\n", .{i + 1});
-                    workers[i].join();
                 }
+                std.process.exit(0);
                 
                 std.debug.print("\nClosing due to external request\n", .{});
                 return;
