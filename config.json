@@ -1,6 +1,6 @@
 {
   "address": "127.0.0.1",
   "port": "8081",
-  "workers": 5000,
+  "workers": 5,
   "useArena": true
 }

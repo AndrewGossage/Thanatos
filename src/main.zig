@@ -22,6 +22,8 @@ pub fn main() !void {
     const allocator = gpa.allocator();
     defer _ = gpa.deinit();
     try sql.init(allocator);
+    defer sql.deinit();
+
     var settings = try Config.init("config.json", allocator);
     defer settings.deinit(allocator);
     var routes = std.ArrayList(server.Route){};
@@ -32,10 +34,8 @@ pub fn main() !void {
         .server = &s,
         .routes = routes,
     };
-
-    const worker = try std.Thread.spawn(.{}, browser.runBrowser, .{});
     const serverW = try std.Thread.spawn(.{}, runServerWrapper, .{context});
-
-    worker.join();
+    const worker = try std.Thread.spawn(.{}, browser.runBrowser, .{context.server});
     serverW.join();
+    worker.join();
 }

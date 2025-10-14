@@ -1,16 +1,20 @@
 const std = @import("std");
-
+const server = @import("server.zig");
+pub var s: *server.Server = undefined;
 // Import C headers directly
 const c = @cImport({
     @cInclude("gtk/gtk.h");
     @cInclude("webkit2/webkit2.h");
 });
+pub var lock: std.Thread.Mutex = .{};
 
 // Signal handler for window destruction
 fn onDestroy(widget: ?*c.GtkWidget, user_data: ?*anyopaque) callconv(.c) void {
     _ = widget;
     _ = user_data;
+
     c.gtk_main_quit();
+    s.triggerClose();
 }
 
 // Signal handler for web view close
@@ -21,10 +25,12 @@ fn onWebViewClose(web_view: ?*c.WebKitWebView, window: ?*anyopaque) callconv(.c)
     return if (c.TRUE) 1 else 0;
 }
 
-pub fn runBrowser() !void {
+pub fn runBrowser(serve: *server.Server) !void {
     // Initialize GTK
     _ = c.gtk_init(null, null);
-
+    var serve2 = serve;
+    serve2 = serve2;
+    s = serve2;
     // Create the main window
     const main_window = c.gtk_window_new(c.GTK_WINDOW_TOPLEVEL);
     c.gtk_window_set_default_size(@ptrCast(main_window), 1024, 768);
