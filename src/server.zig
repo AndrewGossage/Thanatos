@@ -287,6 +287,34 @@ pub const Parser = struct {
         // Don't free parsed here - the caller needs to call parsed.deinit()
         return parsed.value;
     }
+
+     // parse cookies to a stringhashmap
+     pub fn parseCookies(allocator: std.mem.Allocator, request: *std.http.Server.Request) !std.StringHashMap([]const u8) {
+        var cookies = std.StringHashMap([]const u8).init(allocator) ;
+        var it = request.iterateHeaders();
+        var ele = it.next();
+        while (ele != null){
+            if (std.mem.eql(u8, ele.?.name, "Cookie")){
+                var i = std.mem.tokenizeSequence(u8, ele.?.value, "; ");
+                while (i.peek() != null) {
+                    const kv = i.peek().?;
+                    const delim = std.mem.indexOfScalar(u8, kv, '=');
+                    if (delim != null){
+                        const k = kv[0..delim.?];
+                        const v = kv[delim.? + 1 .. kv.len];
+                        std.debug.print("\ncookie name: {s}\n", .{k});
+                        std.debug.print("\ncookie value: {s}\n", .{v});
+                        try cookies.put(k, v);
+                    }
+                    _ = i.next();
+                }
+            }
+            ele = it.next();
+        }
+        return cookies;
+    }
+
+
     // parses number to a given type
     fn parseStringToNum(T: type, str: []const u8) !T {
         return switch (@typeName(T)[0]) {
