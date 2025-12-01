@@ -39,8 +39,13 @@ pub fn runBrowser(serve: *server.Server) !void {
     // Create the WebKit web view
     const web_view = c.webkit_web_view_new();
 
+    // Enable developer tools
+    const settings = c.webkit_web_view_get_settings(@ptrCast(web_view));
+    c.webkit_settings_set_enable_developer_extras(@ptrCast(settings), 1);
+
     // Add the web view to the window
     c.gtk_container_add(@ptrCast(main_window), web_view);
+    // Add the web view to the window
 
     // Connect signal handlers using g_signal_connect
     _ = c.g_signal_connect_data(main_window, "destroy", @ptrCast(&onDestroy), null, null, 0);
